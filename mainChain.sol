@@ -28,6 +28,7 @@ contract Chaincode {
        string Telefon;
        string Adres;
        string Sektor;
+       string sifre;
     } 
 
     mapping(string => DiplomaStruct) public diploma;
@@ -93,7 +94,8 @@ function KurumEkle
 string memory _kurumAdi,
 string memory _telefon,
 string memory _adres,
-string memory _sektor) public 
+string memory _sektor,
+string memory _sifre) public 
 {
      require(keccak256(abi.encodePacked(_kurumAdi)) != keccak256(abi.encodePacked("")) ,  string(abi.encodePacked("Kurum Adi bos birakilamaz.")));
         KurumStruct memory GeciciKurum;
@@ -108,10 +110,16 @@ string memory _sektor) public
         GeciciKurum.Adres=_adres;
         GeciciKurum.Sektor=_sektor;
         GeciciKurum.Telefon=_telefon;
+        GeciciKurum.sifre = _sifre;
 
         kurum[kurumId] = GeciciKurum;
         kurumAdi[_kurumAdi] = GeciciKurum;
         kurumId++;
+}
+
+function kurumAdiGetir(string memory _kurumAdi)  public view returns (KurumStruct memory){
+     KurumStruct memory gecicikurum = kurumAdi[_kurumAdi];
+        return gecicikurum;
 }
 
     function DiplomaSorgula(uint256 _tcNo) public  view returns 
@@ -196,15 +204,7 @@ string memory _sektor) public
     }
 
 
-//    node 2_fonkCalistir.js --cn Chaincode --ft get --fn SertifikaSorgula --fp '["12345678911"]'
-//    node 2_fonkCalistir.js --cn Chaincode --ft get --fn DiplomaSorgula --fp '["12345678910"]'
 
-//    node 2_fonkCalistir.js --cn Chaincode --ft set --fn DiplomaEkle --fp '["12345678910","eto","barbaros",1,"20241213"]'
-//    node 2_fonkCalistir.js --cn Chaincode --ft set --fn SertifikaEkle --fp '["12345678911","kutay","dede",1,"20241213"]'  
-
-//    node 2_fonkCalistir.js --cn Chaincode --ft set --fn DiplomaGuncelle --fp '["12345678911","baran","dede",1,"20241213"]' 
-
-//    node 2_fonkCalistir.js --cn Chaincode --ft set --fn SertifikaGuncelle --fp '["12345678911","oktay","bilge",1,"20241213"]'        
 
 
 }
