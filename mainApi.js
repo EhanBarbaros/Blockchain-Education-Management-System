@@ -18,7 +18,18 @@ const contractJson = JSON.parse(fs.readFileSync(contractName + ".json"));
 const contractAbi = contractJson.abi;
 const contract = new web3.eth.Contract(contractAbi, contractAddress);
 
+let globalKurumId = null; 
 
+app.post('/kurumLogin', (req, res) => {
+    const { kullaniciAdi, sifre } = req.body;
+    
+    if(kullaniciAdi === 'testKurum' && sifre === 'testSifre') {
+        globalKurumId = 1; 
+        res.json({ success: true, message: 'Giriş başarılı', kurumId: globalKurumId });
+    } else {
+        res.status(401).json({ success: false, message: 'Giriş bilgileri hatalı' });
+    }
+});
 
 app.post('/diplomaEkle', async (req, res) => {
     const { tcNo, ad, soyad, kurumId, mezuniyetTarihi } = req.body;
@@ -53,13 +64,13 @@ app.post('/sertifikaEkle', async (req, res) => {
 });
 
 app.post('/kurumEkle', async (req, res) => {
-    const { kurumAdi, telefon, adres, sektor } = req.body;
+    const { kurumAdi, telefon, adres, sektor , sifre } = req.body;
     try {
         const defaultAccount = await web3.eth.getAccounts().then(accounts => accounts[0]);
         const options = { 
             from: defaultAccount,
         };
-        const tx = await contract.methods.KurumEkle(kurumAdi, telefon, adres, sektor).send(options);
+        const tx = await contract.methods.KurumEkle(kurumAdi, telefon, adres, sektor,sifre).send(options);
         await tx.wait();
         res.json({ success: true, message: 'Kurum başarıyla eklendi.' });
     } catch (error) {
@@ -68,13 +79,41 @@ app.post('/kurumEkle', async (req, res) => {
     }
 });
 
+app.post('/kurumLogin', async (req, res) => {
+    const { kurumAdi, sifre } = req.body;
+
+    try {
+        const kurumBilgileri = await contract.methods.kurumAdiGetir(kurumAdi).call();
+
+        if (!kurumBilgileri || kurumBilgileri.sifre !== sifre) {
+            return res.status(401).json({ success: false, message: 'Kurum adı veya şifre hatalı.' });
+        }
+
+        globalKurumId = kurumBilgileri.sifre;
+
+        res.json({
+            success: true,
+            message: 'Başarıyla giriş yapıldı',
+            kurumAdi: kurumBilgileri.kurumAdi,
+            kurumId: kurumBilgileri.kurumId,
+        });
+    } catch (error) {
+        console.error(error);
+        res.status(500).json({ success: false, message: 'Giriş işlemi sırasında bir hata oluştu.' });
+    }
+});
+
 app.post('/diplomaOnayla', async (req, res) => {
     const { tcNo } = req.body;
     try {
+        const diplomaBilgileri = await contract.methods.DiplomaSorgula(tcNo).call();
         const defaultAccount = await web3.eth.getAccounts().then(accounts => accounts[0]);
-        const options = { 
-            from: defaultAccount,
-        };
+
+        if (diplomaBilgileri.KurumId !== globalKurumId.toString()) {
+            return res.status(401).json({ success: false, message: 'Bu işlemi yapmaya yetkiniz yok.' });
+        }
+
+        const options = { from: defaultAccount };
         const tx = await contract.methods.DiplomaOnayla(tcNo).send(options);
         await tx.wait();
         res.json({ success: true, message: 'Diploma başarıyla onaylandı.' });
@@ -87,10 +126,14 @@ app.post('/diplomaOnayla', async (req, res) => {
 app.post('/sertifikaOnayla', async (req, res) => {
     const { tcNo } = req.body;
     try {
+        const sertifikaBilgileri = await contract.methods.SertifikaSorgula(tcNo).call();
         const defaultAccount = await web3.eth.getAccounts().then(accounts => accounts[0]);
-        const options = { 
-            from: defaultAccount,
-        };
+
+        if (sertifikaBilgileri.KurumId !== globalKurumId.toString()) {
+            return res.status(401).json({ success: false, message: 'Bu işlemi yapmaya yetkiniz yok.' });
+        }
+
+        const options = { from: defaultAccount };
         const tx = await contract.methods.SertifikaOnayla(tcNo).send(options);
         await tx.wait();
         res.json({ success: true, message: 'Sertifika başarıyla onaylandı.' });
