@@ -19,17 +19,7 @@ const contractAbi = contractJson.abi;
 const contract = new web3.eth.Contract(contractAbi, contractAddress);
 
 let globalKurumId = null; 
-
-app.post('/kurumLogin', (req, res) => {
-    const { kullaniciAdi, sifre } = req.body;
-    
-    if(kullaniciAdi === 'testKurum' && sifre === 'testSifre') {
-        globalKurumId = 1; 
-        res.json({ success: true, message: 'Giriş başarılı', kurumId: globalKurumId });
-    } else {
-        res.status(401).json({ success: false, message: 'Giriş bilgileri hatalı' });
-    }
-});
+let globalKullaniciId = null; 
 
 app.post('/diplomaEkle', async (req, res) => {
     const { tcNo, ad, soyad, kurumId, mezuniyetTarihi } = req.body;
@@ -60,6 +50,22 @@ app.post('/sertifikaEkle', async (req, res) => {
     } catch (error) {
         console.error(error);
         res.status(500).json({ success: false, message: 'Sertifika eklenirken bir hata oluştu.' });
+    }
+});
+
+app.post('/kullaniciEkle', async (req, res) => {
+    const { tcNo, ad, soyad, kullaniciAdi, sifre } = req.body;
+    try {
+        const defaultAccount = await web3.eth.getAccounts().then(accounts => accounts[0]);
+        const options = { 
+            from: defaultAccount,
+        };
+        const newUser = await contract.methods.KullaniciEkle(tcNo, ad, soyad, kullaniciAdi,sifre).send(options);
+        await newUser.wait();
+        res.status(201).json({ success: true, message: 'Kullanıcı başarıyla eklendi.' });
+    } catch (error) {
+        console.error(error);
+        res.status(500).json({ success: false, message: 'Kullanıcı eklenirken bir hata oluştu.' });
     }
 });
 
@@ -96,6 +102,31 @@ app.post('/kurumLogin', async (req, res) => {
             message: 'Başarıyla giriş yapıldı',
             kurumAdi: kurumBilgileri.kurumAdi,
             kurumId: kurumBilgileri.kurumId,
+        });
+    } catch (error) {
+        console.error(error);
+        res.status(500).json({ success: false, message: 'Giriş işlemi sırasında bir hata oluştu.' });
+    }
+});
+
+app.post('/kullaniciLogin', async (req, res) => {
+    const { tc, sifre } = req.body;
+
+    try {
+        const kullanicibilgileri = await contract.methods.KullaniciTcGetir(tc).call();
+
+        if (!kullanicibilgileri || kullanicibilgileri.sifre !== sifre) {
+            return res.status(401).json({ success: false, message: 'Kullanıcı tc veya şifre hatalı.' });
+        }
+
+        globalKullaniciId = kullanicibilgileri.sifre;
+
+        res.json({
+            success: true,
+            message: 'Başarıyla giriş yapıldı',
+            tc: kullanicibilgileri.TcNo,
+            ad: kullanicibilgileri.Ad,
+            soyad: kullanicibilgileri.Soyad,
         });
     } catch (error) {
         console.error(error);
