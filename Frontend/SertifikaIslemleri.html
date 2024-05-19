@@ -1,0 +1,70 @@
+<!DOCTYPE html>
+<html lang="tr">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Sertifika İşlemleri</title>
+    <link rel="stylesheet" href="frontend.css">
+</head>
+<body>
+    <div class="video-background">
+        <video autoplay loop muted>
+            <source src="resimler/EtherumBackGround.mp4" type="video/mp4">
+            Tarayıcınız videoyu desteklemiyor.
+        </video>
+    </div>
+    <header>
+        <h1>Blockchain Eğitim Yönetim Sistemi</h1>
+        <nav>
+            <ul>
+                <li><a href="AnaSayfa.html">Ana Sayfa</a></li>
+                <li><a href="DiplomaIslemleri.html">Diploma İşlemleri</a></li>
+                <li><a href="SertifikaIslemleri.html">Sertifika İşlemleri</a></li>
+                <li><a href="GirisYap.html">Giriş Yap</a></li>
+                <li><a href="KayitOl.html">Kayıt Ol</a></li>
+            </ul>
+        </nav>
+    </header>
+    <main>
+        <section id="container">
+            <div id="left-panel" class="form-container">
+                <div id="initial-message">
+                    <h2>Lütfen yapmak istediğiniz işlemi seçin</h2>
+                </div>
+                <div id="sertifika-ekle" class="form-section">
+                    <h2>Sertifika Ekle</h2>
+                    <form id="sertifikaEkleForm">
+                        <input type="text" id="tcNoEkle" placeholder="TC No" required>
+                        <input type="text" id="adEkle" placeholder="Ad" required>
+                        <input type="text" id="soyadEkle" placeholder="Soyad" required>
+                        <input type="text" id="kurumIdEkle" placeholder="Kurum ID" required>
+                        <input type="date" id="verilmeTarihiEkle" required>
+                        <button type="submit">Sertifika Ekle</button>
+                    </form>
+                </div>
+                <div id="sertifika-onayla" class="form-section" style="display: none;">
+                    <h2>Sertifika Onayla</h2>
+                    <form id="sertifikaOnaylaForm">
+                        <input type="text" id="tcNoOnayla" placeholder="TC No" required>
+                        <button type="submit">Sertifika Onayla</button>
+                    </form>
+                </div>
+                <div id="sertifika-sorgula" class="form-section" style="display: none;">
+                    <h2>Sertifika Sorgula</h2>
+                    <form id="sertifikaSorgulaForm">
+                        <input type="text" id="tcNoSorgula" placeholder="TC No" required>
+                        <button type="submit">Sorgula</button>
+                    </form>
+                    <div id="sertifikaSonuc"></div>
+                </div>
+            </div>
+            <div id="right-panel" class="button-container">
+                <button onclick="showForm('sertifika-ekle')">Sertifika Ekle</button>
+                <button onclick="showForm('sertifika-onayla')">Sertifika Onayla</button>
+                <button onclick="showForm('sertifika-sorgula')">Sertifika Sorgula</button>
+            </div>
+        </section>
+    </main>
+    <script src="frontend.js"></script>
+</body>
+</html>

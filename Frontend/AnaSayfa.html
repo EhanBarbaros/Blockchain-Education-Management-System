@@ -1,0 +1,87 @@
+<!DOCTYPE html>
+<html lang="tr">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Blockchain Eğitim Yönetim Sistemi</title>
+    <link rel="stylesheet" href="frontend.css">
+</head>
+<body>
+    <div class="video-background">
+        <video autoplay loop muted>
+            <source src="resimler/EtherumBackGround.mp4" type="video/mp4">
+            Tarayıcınız videoyu desteklemiyor.
+        </video>
+    </div>
+    <header>
+        <h1>Blockchain Eğitim Yönetim Sistemi</h1>
+        <nav>
+            <ul>
+                <li><a href="AnaSayfa.html">Ana Sayfa</a></li>
+                <li><a href="DiplomaIslemleri.html">Diploma İşlemleri</a></li>
+                <li><a href="SertifikaIslemleri.html">Sertifika İşlemleri</a></li>
+                <li><a href="GirisYap.html">Giriş Yap</a></li>
+                <li><a href="KayitOl.html">Kayıt Ol</a></li>
+            </ul>
+        </nav>
+    </header>
+    <main>
+        <section id="container">
+            <div id="left-slider" class="slider-container">
+                <div class="slider-frame">
+                    <div class="slider">
+                        <div class="slide fade">
+                            <img src="resimler/gor1.png" alt="Blockchain Görseli 1">
+                        </div>
+                        <div class="slide fade">
+                            <img src="resimler/gor2.png" alt="Blockchain Görseli 2">
+                        </div>
+                        <div class="slide fade">
+                            <img src="resimler/gor3.png" alt="Blockchain Görseli 3">
+                        </div>
+                        <a class="prev" onclick="plusSlides(-1)">&#10094;</a>
+                        <a class="next" onclick="plusSlides(1)">&#10095;</a>
+                    </div>
+                </div>
+                <div class="thumbnail-slider">
+                    <div class="thumbnail" onclick="currentSlide(1)">
+                        <img src="resimler/gor1.png" alt="Blockchain Görseli 1">
+                    </div>
+                    <div class="thumbnail" onclick="currentSlide(2)">
+                        <img src="resimler/gor2.png" alt="Blockchain Görseli 2">
+                    </div>
+                    <div class="thumbnail" onclick="currentSlide(3)">
+                        <img src="resimler/gor3.png" alt="Blockchain Görseli 3">
+                    </div>
+                </div>
+            </div>
+            <div id="right-slider" class="slider-container">
+                <h2 class="slider-title">Bilgilendirme</h2>
+                <div class="text-slider" style="background-color: blue;">
+                    <div class="text-slide fade"  onclick="location.href='KurumEkle.html'">
+                        <p>Henüz kayıt olmadınız mı? Hemen kuruluşunuzu kaydedin ve blockchain teknolojisi ile güvenli bilgi paylaşımına adım atın.</p>
+                    </div>
+                    <div class="text-slide fade" onclick="location.href='DiplomaIslemleri.html'">
+                        <p>Akademik belgelerinizi daha güvenli bir şekilde depolayın ve doğrulayın. Blockchain ile belgelerinizin güvenliğini sağlayın.</p>
+                    </div>
+                    <div class="text-slide fade" onclick="location.href='SertifikaIslemleri.html'">
+                        <p>Sertifikalarınızı blockchain ile doğrulayın ve güvenilirliğini artırın. Sertifikalarınızın geçerliliğini herkes kolayca kontrol edebilsin.</p>
+                    </div>
+                </div>
+            </div>
+        </section>
+    </main>
+    <div id="loginModal" class="modal">
+        <div class="modal-content">
+            <span class="close">&times;</span>
+            <h2>Kurum Girişi</h2>
+            <form id="loginForm">
+                <input type="text" id="kullaniciAdi" placeholder="Kullanıcı Adı" required>
+                <input type="password" id="sifre" placeholder="Şifre" required>
+                <button type="submit">Giriş Yap</button>
+            </form>
+        </div>
+    </div>
+    <script src="frontend.js"></script>
+</body>
+</html>
