@@ -14,6 +14,8 @@ contract Chaincode {
         string isState;
         string MezuniyetTarihi;
     }
+
+
     struct SertifikaStruct {
         string TcNo;
         string Ad;
@@ -22,6 +24,17 @@ contract Chaincode {
         string isState;
         string VerilmeTarihi;
     }
+    
+struct KullaniciStruct {
+        string TcNo;
+        string Ad;
+        string Soyad;
+        string KullaniciAdi;
+        string Sifre;
+        string[] Diplomalar;
+        string[] Sertifikalar;
+    }
+
     struct KurumStruct{
        uint256 KurumId;
        string KurumAdi;
@@ -38,56 +51,63 @@ contract Chaincode {
     mapping(uint => KurumStruct) public kurum;
     uint256 public kurumId;
     mapping(string => KurumStruct) public kurumAdi;
+    
+    mapping(string => KullaniciStruct) public kullanici;
 
-    function DiplomaEkle(string memory _tcNo, string memory _ad, string memory _soyad, uint256 _kurumId,string memory _mezuniyetTarihi) public {
-        require(keccak256(abi.encodePacked(_tcNo)) != keccak256(abi.encodePacked("")) ,  string(abi.encodePacked("TcNo bos birakilamaz.")));
-        DiplomaStruct memory GeciciDiploma;
+function DiplomaEkle(
+    string memory _tcNo, 
+    string memory _ad, 
+    string memory _soyad, 
+    uint256 _kurumId,
+    string memory _mezuniyetTarihi) 
+public { 
+ require(keccak256(abi.encodePacked(_tcNo)) != keccak256(abi.encodePacked("")) ,  string(abi.encodePacked("TcNo bos birakilamaz.")));
+ DiplomaStruct memory GeciciDiploma;
+ require(keccak256(abi.encodePacked(diploma[_tcNo].TcNo)) != keccak256(abi.encodePacked(_tcNo)),"Bu TC ile zaten bir diploma kayitli.");
 
-require(
-        keccak256(abi.encodePacked(diploma[_tcNo].TcNo)) != keccak256(abi.encodePacked(_tcNo)),
-        "Bu TC ile zaten bir diploma kayitli."
-    );
+    GeciciDiploma.TcNo=_tcNo;
+    GeciciDiploma.Ad=_ad;
+    GeciciDiploma.Soyad=_soyad;
+    GeciciDiploma.KurumId=_kurumId;
+    GeciciDiploma.MezuniyetTarihi=_mezuniyetTarihi;
+    GeciciDiploma.isState=Onaylanmadi;
 
-        GeciciDiploma.TcNo=_tcNo;
-        GeciciDiploma.Ad=_ad;
-        GeciciDiploma.Soyad=_soyad;
-        GeciciDiploma.KurumId=_kurumId;
-        GeciciDiploma.MezuniyetTarihi=_mezuniyetTarihi;
-        GeciciDiploma.isState=Onaylanmadi;
+    diploma[_tcNo] = GeciciDiploma;
+    kullanici[_tcNo].Diplomalar.push(_tcNo);
+    DiplomaId++;
+}
 
-
-        diploma[_tcNo] = GeciciDiploma;
-        DiplomaId++;
-    }
-
-    function DiplomaOnayla(string memory _tcNo)  public {
+function DiplomaOnayla(string memory _tcNo)  public {
+    require(bytes(diploma[_tcNo].TcNo).length > 0, "Diploma bulunamadi.");
         diploma[_tcNo].isState = Onaylandi;
+}
+
+function SertifikaEkle(
+    string memory _tcNo, 
+    string memory _ad, 
+    string memory _soyad, 
+    uint256 _kurumId,
+    string memory _verilmeTarihi) 
+public {
+require(keccak256(abi.encodePacked(_tcNo)) != keccak256(abi.encodePacked("")) ,  string(abi.encodePacked("TcNo bos birakilamaz.")));
+SertifikaStruct memory GeciciSertifika;
+require(keccak256(abi.encodePacked(sertifika[_tcNo].TcNo)) != keccak256(abi.encodePacked(_tcNo)),"Bu TC ile zaten bir sertifika kayitli.");
+    GeciciSertifika.TcNo=_tcNo;
+    GeciciSertifika.Ad=_ad;
+    GeciciSertifika.Soyad=_soyad;
+    GeciciSertifika.KurumId=_kurumId;
+    GeciciSertifika.VerilmeTarihi=_verilmeTarihi;
+    GeciciSertifika.isState=Onaylanmadi;
+
+    sertifika[_tcNo] = GeciciSertifika;
+    kullanici[_tcNo].Sertifikalar.push(_tcNo);
+    SertifikaId++;
     }
 
-    function SertifikaEkle(string memory _tcNo, string memory _ad, string memory _soyad, uint256 _kurumId,string memory _verilmeTarihi) public {
-        require(keccak256(abi.encodePacked(_tcNo)) != keccak256(abi.encodePacked("")) ,  string(abi.encodePacked("TcNo bos birakilamaz.")));
-        SertifikaStruct memory GeciciSertifika;
-
-        require(
-        keccak256(abi.encodePacked(sertifika[_tcNo].TcNo)) != keccak256(abi.encodePacked(_tcNo)),
-        "Bu TC ile zaten bir sertifika kayitli."
-    );
-
-        GeciciSertifika.TcNo=_tcNo;
-        GeciciSertifika.Ad=_ad;
-        GeciciSertifika.Soyad=_soyad;
-        GeciciSertifika.KurumId=_kurumId;
-        GeciciSertifika.VerilmeTarihi=_verilmeTarihi;
-        GeciciSertifika.isState=Onaylanmadi;
-
-
-        sertifika[_tcNo] = GeciciSertifika;
-        SertifikaId++;
-    }
-
-    function SertifikaOnayla(string memory _tcNo)  public {
-        sertifika[_tcNo].isState = Onaylandi;
-    }
+function SertifikaOnayla(string memory _tcNo)  public {
+    require(bytes(sertifika[_tcNo].TcNo).length > 0, "Sertifika bulunamadi.");
+    sertifika[_tcNo].isState = Onaylandi;
+}
 
 function KurumEkle
 (
@@ -97,13 +117,9 @@ string memory _adres,
 string memory _sektor,
 string memory _sifre) public 
 {
-     require(keccak256(abi.encodePacked(_kurumAdi)) != keccak256(abi.encodePacked("")) ,  string(abi.encodePacked("Kurum Adi bos birakilamaz.")));
-        KurumStruct memory GeciciKurum;
-
-        require(
-        keccak256(abi.encodePacked(kurumAdi[_kurumAdi].KurumAdi)) != keccak256(abi.encodePacked(_kurumAdi)),
-        "Bu TC ile zaten bir diploma kayitli."
-    );
+    require(keccak256(abi.encodePacked(_kurumAdi)) != keccak256(abi.encodePacked("")) ,  string(abi.encodePacked("Kurum Adi bos birakilamaz.")));
+    KurumStruct memory GeciciKurum;
+    require(bytes(kurumAdi[_kurumAdi].KurumAdi).length == 0, "Bu isimle zaten bir kurum kayitli.");
 
         GeciciKurum.KurumAdi=_kurumAdi;
         GeciciKurum.KurumId=kurumId;
@@ -117,10 +133,41 @@ string memory _sifre) public
         kurumId++;
 }
 
+function KullaniciEkle(
+        string memory _tcNo,
+        string memory _ad,
+        string memory _soyad,
+        string memory _kullaniciAdi,
+        string memory _sifre
+    ) public {
+        require(bytes(_tcNo).length > 0, "TcNo bos birakilamaz.");
+        require(bytes(kullanici[_tcNo].TcNo).length == 0, "Bu TC ile zaten bir kullanici kayitli.");
+
+        string[] memory bosDizi;
+
+        KullaniciStruct memory yeniKullanici = KullaniciStruct({
+            TcNo: _tcNo,
+            Ad: _ad,
+            Soyad: _soyad,
+            KullaniciAdi: _kullaniciAdi,
+            Sifre: _sifre,
+            Diplomalar: bosDizi,
+            Sertifikalar: bosDizi
+        });
+
+        kullanici[_tcNo] = yeniKullanici;
+    }
+
 function kurumAdiGetir(string memory _kurumAdi)  public view returns (KurumStruct memory){
      KurumStruct memory gecicikurum = kurumAdi[_kurumAdi];
         return gecicikurum;
 }
+
+function KullaniciTcGetir(string memory _tc)  public view returns (KullaniciStruct memory){
+     KullaniciStruct memory gecicikullanici = kullanici[_tc];
+        return gecicikullanici;
+}
+
 
     function DiplomaSorgula(uint256 _tcNo) public  view returns 
     (
@@ -204,7 +251,15 @@ function kurumAdiGetir(string memory _kurumAdi)  public view returns (KurumStruc
     }
 
 
+//    node 2_fonkCalistir.js --cn Chaincode --ft get --fn SertifikaSorgula --fp '["12345678911"]'
+//    node 2_fonkCalistir.js --cn Chaincode --ft get --fn DiplomaSorgula --fp '["12345678910"]'
 
+//    node 2_fonkCalistir.js --cn Chaincode --ft set --fn DiplomaEkle --fp '["12345678910","eto","barbaros",1,"20241213"]'
+//    node 2_fonkCalistir.js --cn Chaincode --ft set --fn SertifikaEkle --fp '["12345678911","kutay","dede",1,"20241213"]'  
+
+//    node 2_fonkCalistir.js --cn Chaincode --ft set --fn DiplomaGuncelle --fp '["12345678911","baran","dede",1,"20241213"]' 
+
+//    node 2_fonkCalistir.js --cn Chaincode --ft set --fn SertifikaGuncelle --fp '["12345678911","oktay","bilge",1,"20241213"]'        
 
 
 }
