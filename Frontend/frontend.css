@@ -2,7 +2,7 @@ body {
     font-family: Arial, sans-serif;
     margin: 0;
     padding: 0;
-    overflow: hidden; /* Arka plan animasyonu düzgün çalışması için */
+    overflow: hidden;
 }
 
 .video-background {
@@ -22,7 +22,7 @@ body {
 }
 
 header {
-    background-color: rgba(51, 51, 51, 0.8); /* Transparan arka plan */
+    background-color: rgba(51, 51, 51, 0.8);
     color: #fff;
     padding: 1em 0;
     text-align: center;
@@ -34,12 +34,12 @@ header {
 header h1 {
     margin: 0;
     font-size: 2.5em;
-    color: #FFD700; /* Altın rengi */
+    color: #FFD700;
     text-shadow: 2px 2px 5px rgba(0,0,0,0.5);
 }
 
 nav {
-    background-color: rgba(68, 68, 68, 0.8); /* Transparan arka plan */
+    background-color: rgba(68, 68, 68, 0.8);
 }
 
 nav ul {
@@ -62,7 +62,7 @@ nav ul li a {
 }
 
 nav ul li a:hover {
-    background-color: rgba(85, 85, 85, 0.8); /* Transparan arka plan */
+    background-color: rgba(85, 85, 85, 0.8);
 }
 
 main {
@@ -72,163 +72,64 @@ main {
 #container {
     display: flex;
     justify-content: center;
-    gap: 20px;
-    margin-top: 50px; /* Navbar ile arayı aç */
+    align-items: center;
+    height: 80vh;
+    position: relative;
 }
 
 .slider-container {
-    width: 60%; /* 3/5 */
-    margin: auto;
-}
-
-#right-slider {
-    width: 40%; /* 2/5 */
-    background-color: rgba(255, 255, 255, 0.9); /* Hafif transparan arka plan */
-    padding: 20px;
-    border-radius: 10px;
-    box-shadow: 0 0 10px rgba(0,0,0,0.2);
-}
-
-.slider-title {
-    font-size: 1.5em;
-    color: #333;
-    text-align: center;
-    margin-bottom: 10px;
+    position: relative;
+    width: 45%;
+    margin: 0 20px;
 }
 
 .slider-frame {
     position: relative;
-    padding: 10px;
-    border: 2px solid rgba(0,0,0,0.1); /* Daha belirgin kenarlık */
-    border-radius: 10px;
-    box-shadow: 0 0 20px rgba(0,0,0,0.3);
-    background-color: rgba(255, 255, 255, 0.9); /* Beyaz arka plan */
-}
-
-@keyframes frameAnimation {
-    from {
-        border-color: rgba(0,0,0,0.1);
-        box-shadow: 0 0 20px rgba(0,0,0,0.3);
-    }
-    to {
-        border-color: rgba(0,0,0,0.3);
-        box-shadow: 0 0 40px rgba(0,0,0,0.5);
-    }
-}
-
-.slider, .text-slider {
-    position: relative;
+    width: 100%;
     max-width: 100%;
-    margin: auto;
     overflow: hidden;
+    background-color: rgba(255, 255, 255, 0.9);
 }
 
-.slide, .text-slide {
+.slider {
+    display: flex;
+    transition: transform 0.5s ease;
+}
+
+.slide {
     display: none;
-    position: relative;
+    width: 100%;
 }
 
 .slide img {
     width: 100%;
-    height: auto;
-    max-height: 300px;
-}
-
-.text-slide p {
-    font-size: 20px;
-    color: #333;
-    text-align: center;
-    padding: 20px;
-    margin: 0;
-    background-color: rgba(255, 255, 255, 0.8);
     border-radius: 10px;
-    box-shadow: 0 0 10px rgba(0,0,0,0.1);
-}
-
-.fade {
-    animation: fade 1.5s;
-}
-
-@keyframes fade {
-    from {opacity: .4}
-    to {opacity: 1}
 }
 
 .thumbnail-slider {
     display: flex;
     justify-content: center;
     margin-top: 10px;
-    background-color: rgba(255, 255, 255, 0.9); /* Daha belirgin arka plan */
-    padding: 10px;
-    border-radius: 10px;
-    box-shadow: 0 0 10px rgba(0,0,0,0.2);
 }
 
 .thumbnail {
     cursor: pointer;
     margin: 0 5px;
-    transition: transform 0.3s, filter 0.3s;
 }
 
 .thumbnail img {
     width: 60px;
     height: 40px;
-    opacity: 0.6;
+    border: 2px solid transparent;
     border-radius: 5px;
-    transition: all 0.3s;
 }
 
-.thumbnail img:hover, .thumbnail img.active {
-    opacity: 1;
-    transform: scale(1.2);
-    filter: none;
-    border: 2px solid #FFD700; /* Altın rengi çerçeve */
+.thumbnail img.active {
+    border: 2px solid #00509E;
 }
 
 .thumbnail img.blur {
     filter: blur(2px);
-    transform: scale(0.8);
-}
-
-img {
-    width: 100%;
-    height: auto;
-}
-
-.modal {
-    display: none;
-    position: fixed;
-    z-index: 1001;
-    left: 0;
-    top: 0;
-    width: 100%;
-    height: 100%;
-    overflow: auto;
-    background-color: rgb(0,0,0);
-    background-color: rgba(0,0,0,0.4);
-    padding-top: 60px;
-}
-
-.modal-content {
-    background-color: #fefefe;
-    margin: 5% auto;
-    padding: 20px;
-    border: 1px solid #888;
-    width: 80%;
-}
-
-.close {
-    color: #aaa;
-    float: right;
-    font-size: 28px;
-    font-weight: bold;
-}
-
-.close:hover,
-.close:focus {
-    color: black;
-    text-decoration: none;
-    cursor: pointer;
 }
 
 .prev, .next {
@@ -236,7 +137,6 @@ img {
     position: absolute;
     top: 50%;
     width: auto;
-    padding: 16px;
     margin-top: -22px;
     color: white;
     font-weight: bold;
@@ -255,104 +155,95 @@ img {
     background-color: rgba(0,0,0,0.8);
 }
 
-.dot {
-    cursor: pointer;
-    height: 15px;
-    width: 15px;
-    margin: 0 2px;
-    background-color: #bbb;
-    border-radius: 50%;
-    display: inline-block;
-    transition: background-color 0.6s ease;
-}
-
-.active, .dot:hover {
-    background-color: #717171;
-}
-
-.text-slider .text-slide {
-    cursor: pointer;
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    min-height: 150px;
-    border: 2px solid #ccc;
-    border-radius: 10px;
-    box-shadow: 0 0 10px rgba(0,0,0,0.1);
-    background-color: #fff;
-    transition: background-color 0.3s, transform 0.3s;
-}
-
-.text-slider .text-slide:hover {
-    background-color: #f4f4f4;
-    transform: scale(1.05);
-}
-
-/* Yeni Eklenen CSS */
-.form-container {
-    width: 60%; /* 3/5 */
-    background-color: rgba(255, 255, 255, 0.9); /* Hafif transparan arka plan */
-    padding: 20px;
-    border-radius: 10px;
-    box-shadow: 0 0 10px rgba(0,0,0,0.2);
-    text-align: center; /* Metinleri ortala */
-}
-
-.button-container {
-    width: 40%; /* 2/5 */
+.text-slider {
     display: flex;
     flex-direction: column;
-    align-items: center;
     justify-content: center;
-    gap: 20px;
+    align-items: center;
+    background-color: rgba(255, 255, 255, 0.9);
+    padding: 20px;
+    border-radius: 10px;
+    height: 100%;
 }
 
-.button-container button {
-    padding: 15px 30px;
-    font-size: 1.2em;
-    border: none;
-    border-radius: 5px;
-    background-color: #00509E; /* Mavi */
-    color: #fff;
-    cursor: pointer;
-    transition: background-color 0.3s, transform 0.3s;
-    width: 100%; /* Butonları eşit boyutlu yap */
-}
-
-.button-container button:hover {
-    background-color: #003366; /* Lacivert */
-    transform: scale(1.05);
-}
-
-.form-section {
+.text-slide {
     display: none;
+    width: 100%;
+    cursor: pointer;
+    justify-content: center;
+    align-items: center;
 }
 
-button[type="submit"] {
-    background-color: #00509E; /* Mavi */
+.text-slide p {
+    margin: 0;
+    padding: 20px;
+    text-align: center;
+    color: #00509E;
+    font-size: 1.2em;
+}
+
+.text-slide.fade {
+    transition: opacity 1s ease-in-out;
+}
+
+.modal {
+    display: none;
+    position: fixed;
+    z-index: 1000;
+    left: 0;
+    top: 0;
+    width: 100%;
+    height: 100%;
+    overflow: auto;
+    background-color: rgba(0,0,0,0.4);
+}
+
+.modal-content {
+    background-color: #fefefe;
+    margin: 15% auto;
+    padding: 20px;
+    border: 1px solid #888;
+    width: 80%;
+    max-width: 400px;
+    text-align: center;
+    border-radius: 10px;
+}
+
+.close {
+    color: #aaa;
+    float: right;
+    font-size: 28px;
+    font-weight: bold;
+}
+
+.close:hover,
+.close:focus {
+    color: black;
+    text-decoration: none;
+    cursor: pointer;
+}
+
+button[type="submit"], button[type="button"] {
+    background-color: #00509E;
     color: #fff;
     padding: 10px 20px;
     border: none;
     border-radius: 5px;
     cursor: pointer;
     transition: background-color 0.3s, transform 0.3s;
+    margin-top: 10px;
 }
 
-button[type="submit"]:hover {
-    background-color: #003366; /* Lacivert */
+button[type="submit"]:hover, button[type="button"]:hover {
+    background-color: #003366;
     transform: scale(1.05);
 }
 
-input[type="text"], input[type="date"], input[type="password"] {
+input[type="text"], input[type="password"] {
     width: calc(100% - 20px);
     padding: 10px;
     margin: 10px 0;
     border: 1px solid #ccc;
     border-radius: 5px;
     box-sizing: border-box;
-}
-
-h2 {
-    color: #00509E; /* Mavi */
-    text-align: center;
 }
