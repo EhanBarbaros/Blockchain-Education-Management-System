@@ -57,3 +57,4 @@ Kullanıcı kayıt ve giriş işlemleri.
 Diplomaların eklenmesi, onaylanması ve güncellenmesi.
 Sertifikaların eklenmesi, onaylanması ve güncellenmesi.
 Diplomaların ve sertifikaların sorgulanması.
+ 
