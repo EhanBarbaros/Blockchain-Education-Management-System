@@ -23,6 +23,7 @@ contract Chaincode {
         uint256 KurumId;
         string isState;
         string VerilmeTarihi;
+        string SertifikaAdi;
     }
 
 
@@ -64,7 +65,8 @@ function SertifikaEkle(
     string memory _ad, 
     string memory _soyad, 
     uint256 _kurumId,
-    string memory _verilmeTarihi) 
+    string memory _verilmeTarihi,
+     string memory _sertifikaAdi) 
 public {
 require(keccak256(abi.encodePacked(_tcNo)) != keccak256(abi.encodePacked("")) ,  string(abi.encodePacked("TcNo bos birakilamaz.")));
 SertifikaStruct memory GeciciSertifika;
@@ -74,6 +76,7 @@ require(keccak256(abi.encodePacked(sertifika[_tcNo].TcNo)) != keccak256(abi.enco
     GeciciSertifika.Soyad=_soyad;
     GeciciSertifika.KurumId=_kurumId;
     GeciciSertifika.VerilmeTarihi=_verilmeTarihi;
+    GeciciSertifika.SertifikaAdi=_sertifikaAdi;
     GeciciSertifika.isState=Onaylanmadi;
 
     sertifika[_tcNo] = GeciciSertifika;
@@ -84,36 +87,39 @@ function SertifikaOnayla(string memory _tcNo)  public {
     require(bytes(sertifika[_tcNo].TcNo).length > 0, "Sertifika bulunamadi.");
     sertifika[_tcNo].isState = Onaylandi;
 }
-    function DiplomaSorgula(uint256 _tcNo) public  view returns 
-    (
-        string[5] memory
-    ) 
-    {
-        DiplomaStruct storage diplomaSorgula = diploma[uintToStr(_tcNo)];
-        string[5] memory sorgulaReturn;
 
-        sorgulaReturn[0] = string(diplomaSorgula.Ad);
-        sorgulaReturn[1] = string(diplomaSorgula.Soyad);
-        sorgulaReturn[2] = string(diplomaSorgula.isState);
-        sorgulaReturn[3] = string(uintToStr(diplomaSorgula.KurumId));
-        sorgulaReturn[4] = string(diplomaSorgula.MezuniyetTarihi);
+
+function DiplomaSorgula(string memory _tcNo) public view returns (string[6] memory) {
+        DiplomaStruct storage diplomaSorgula = diploma[_tcNo];
+        string[6] memory sorgulaReturn;
+
+        sorgulaReturn[0] = diplomaSorgula.TcNo;
+        sorgulaReturn[1] = diplomaSorgula.Ad;
+        sorgulaReturn[2] = diplomaSorgula.Soyad;
+        sorgulaReturn[3] = uintToStr(diplomaSorgula.KurumId);
+        sorgulaReturn[4] = diplomaSorgula.isState;
+        sorgulaReturn[5] = diplomaSorgula.MezuniyetTarihi;
 
         return sorgulaReturn;
     }
 
     function SertifikaSorgula(string memory _tcNo) public  view returns 
     (
-        string[5] memory
+        string[7] memory
     ) 
     {
         SertifikaStruct storage sertifikaSorgula = sertifika[_tcNo];
-        string[5] memory sorgulaReturn;
+       string[7] memory sorgulaReturn;
 
-        sorgulaReturn[0] = string(sertifikaSorgula.Ad);
-        sorgulaReturn[1] = string(sertifikaSorgula.Soyad);
-        sorgulaReturn[2] = string(sertifikaSorgula.isState);
-        sorgulaReturn[3] = string(uintToStr(sertifikaSorgula.KurumId));
-        sorgulaReturn[4] = string(sertifikaSorgula.VerilmeTarihi);
+        sorgulaReturn[0] = sertifikaSorgula.TcNo;
+
+        sorgulaReturn[1] = string(sertifikaSorgula.Ad);
+        sorgulaReturn[2] = string(sertifikaSorgula.Soyad);
+        sorgulaReturn[3] = string(sertifikaSorgula.isState);
+        sorgulaReturn[4] = string(uintToStr(sertifikaSorgula.KurumId));
+        sorgulaReturn[5] = string(sertifikaSorgula.VerilmeTarihi);
+        sorgulaReturn[6] = string(sertifikaSorgula.SertifikaAdi);
+        
 
         return sorgulaReturn;
     }
@@ -133,7 +139,7 @@ function SertifikaOnayla(string memory _tcNo)  public {
     }
 
     function SertifikaGuncelle
-    (string memory _tcNo, string memory _ad, string memory _soyad, uint256 _kurumId ,string memory _verilmeTarihi    
+    (string memory _tcNo, string memory _ad, string memory _soyad, uint256 _kurumId ,string memory _verilmeTarihi ,string memory _sertifikaAdi   
     ) public 
     {
         require(keccak256(abi.encodePacked(_tcNo)) != keccak256(abi.encodePacked("")) ,  string(abi.encodePacked("TcNo bos birakilamaz.")));  
@@ -143,6 +149,7 @@ function SertifikaOnayla(string memory _tcNo)  public {
         SertifikaMapping.Soyad=_soyad;
         SertifikaMapping.KurumId=_kurumId;
         SertifikaMapping.VerilmeTarihi=_verilmeTarihi;
+        SertifikaMapping.SertifikaAdi=_sertifikaAdi;
         SertifikaMapping.isState=Onaylanmadi;
     }
 
