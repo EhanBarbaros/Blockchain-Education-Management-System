@@ -1,0 +1,27 @@
+node 2_fonkCalistir.js --cn CerenIhale --ft set --fn IhaleOlustur --fp '["istkul","iad",2,3,4,5,6,["komuye1","komuye2"],7,8,9]'   
+node 2_fonkCalistir.js --cn CerenIhale --ft set --fn IhaleOlustur --fp '["istkul","iad2",2,3,4,5,6,["komuye1","komuye2","komuye3"],7,8,9]'
+node 2_fonkCalistir.js --cn CerenIhale --ft set --fn IhaleOlustur --fp '["istkul","iad3",2,3,4,5,6,["komuye1"],7,8,9]'
+
+node 2_fonkCalistir.js --cn CerenIhale --ft set --fn IhaleGuncelle --fp '["1","gunceliad","guncelidarekul",22,33,44,55,66,["guncelkomuye1"],77]'
+
+node 2_fonkCalistir.js --cn CerenIhale --ft get --fn GetIhale --fp '["1"]'
+
+node 2_fonkCalistir.js --cn CerenIhale --ft set --fn IhaleOnayla --fp '["1","istkul"]'   |
+node 2_fonkCalistir.js --cn CerenIhale --ft set --fn IhaleOnayla --fp '["2","istkul"]'   |
+node 2_fonkCalistir.js --cn CerenIhale --ft set --fn IhaleOnayla --fp '["3","istkul"]' 
+
+node 2_fonkCalistir.js --cn CerenIhale --ft get --fn IhaleSorgula --fp '["1"]'
+
+node 2_fonkCalistir.js --cn CerenIhale --ft get --fn IhaleListele --fp '[]'
+
+node 2_fonkCalistir.js --cn CerenIhale --ft set --fn IlanOlustur --fp '["1","tesyeri","belgehash","aciklama",2,3]'
+node 2_fonkCalistir.js --cn CerenIhale --ft set --fn IlanOlustur --fp '["2","tesyeri","belgehash","aciklama",2,3]'
+node 2_fonkCalistir.js --cn CerenIhale --ft set --fn IlanOlustur --fp '["3","tesyeri","belgehash","aciklama",2,3]'
+
+node 2_fonkCalistir.js --cn CerenIhale --ft get --fn IlanSorgula --fp '["1"]'
+
+node 2_fonkCalistir.js --cn CerenIhale --ft get --fn IlanListele --fp '[]'
+
+
+***  İf Your Fonction is a post you must use set ***
+***  İf Your Fonction is a ger you must use get ***
