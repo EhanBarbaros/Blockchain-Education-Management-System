@@ -1,0 +1,113 @@
+<!DOCTYPE html>
+<html lang="tr">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Sertifika Ekle</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            background-color: #f0f0f0;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            height: 100vh;
+            margin: 0;
+        }
+
+        .form-container {
+            background-color: #ffffff;
+            padding: 20px;
+            border-radius: 10px;
+            box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+            max-width: 400px;
+            width: 100%;
+        }
+
+        input[type="text"],
+        input[type="date"] {
+            width: calc(100% - 22px);
+            padding: 10px;
+            margin: 10px 0;
+            border: 1px solid #ccc;
+            border-radius: 5px;
+            box-sizing: border-box;
+        }
+
+        button[type="submit"] {
+            background-color: #4CAF50;
+            color: white;
+            padding: 10px 20px;
+            border: none;
+            border-radius: 5px;
+            cursor: pointer;
+            width: 100%;
+        }
+
+        button[type="submit"]:hover {
+            background-color: #45a049;
+        }
+
+        .message {
+            text-align: center;
+            margin-top: 20px;
+        }
+    </style>
+</head>
+<body>
+    <div class="form-container">
+        <h2>Sertifika Ekle</h2>
+        <form id="sertifikaEkleForm">
+            <input type="text" id="tcNo" placeholder="TC No" required>
+            <input type="text" id="ad" placeholder="Ad" required>
+            <input type="text" id="soyad" placeholder="Soyad" required>
+            <input type="text" id="kurumId" placeholder="Kurum ID" required>
+            <input type="date" id="verilmeTarihi" required>
+            <input type="text" id="sertifikaAdi" placeholder="Sertifika Adı" required>
+            <button type="submit">Sertifika Ekle</button>
+        </form>
+        <div class="message" id="message"></div>
+    </div>
+
+    <script>
+        document.getElementById('sertifikaEkleForm').addEventListener('submit', async function (event) {
+            event.preventDefault();
+            const tcNo = document.getElementById('tcNo').value;
+            const ad = document.getElementById('ad').value;
+            const soyad = document.getElementById('soyad').value;
+            const kurumId = document.getElementById('kurumId').value;
+            const verilmeTarihi = document.getElementById('verilmeTarihi').value;
+            const sertifikaAdi = document.getElementById('sertifikaAdi').value;
+
+            try {
+                const token = localStorage.getItem('token');
+                const response = await fetch('http://192.168.1.105:4151/sertifikaEkle', {
+                    method: 'POST',
+                    headers: { 
+                        'Content-Type': 'application/json',
+                        'Authorization': 'Bearer ' + token
+                    },
+                    body: JSON.stringify({ tcNo, ad, soyad, kurumId, verilmeTarihi, sertifikaAdi })
+                });
+                const data = await response.json();
+                const messageElement = document.getElementById('message');
+                if (data.success) {
+                    messageElement.innerText = 'Sertifika başarıyla eklendi!';
+                    messageElement.style.color = 'green';
+                    setTimeout(() => {
+                        window.location.href = 'AnaSayfa.html';
+                    }, 2000);
+                } else {
+                    messageElement.innerText = 'Sertifika eklenirken bir hata oluştu: ' + data.message;
+                    messageElement.style.color = 'red';
+                }
+            } catch (error) {
+                console.error('Error:', error);
+                const messageElement = document.getElementById('message');
+                messageElement.innerText = 'Sertifika eklenirken bir hata oluştu: ' + error.message;
+                messageElement.style.color = 'red';
+            }
+        });
+    </script>
+</body>
+</html>

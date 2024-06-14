@@ -1,0 +1,152 @@
+<!DOCTYPE html>
+<html lang="tr">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Sertifika İşlemleri</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            background-color: #f0f0f0;
+            margin: 0;
+            padding: 0;
+        }
+
+        header {
+            background-color: #4CAF50;
+            color: white;
+            padding: 10px 0;
+            text-align: center;
+        }
+
+        nav {
+            background-color: #333;
+            overflow: hidden;
+        }
+
+        nav a {
+            float: left;
+            display: block;
+            color: white;
+            text-align: center;
+            padding: 14px 16px;
+            text-decoration: none;
+        }
+
+        nav a:hover {
+            background-color: #ddd;
+            color: black;
+        }
+
+        main {
+            padding: 20px;
+            display: flex;
+            justify-content: space-around;
+        }
+
+        .button {
+            background-color: rgba(0, 0, 0, 0.5);
+            color: white;
+            border: none;
+            padding: 20px;
+            text-align: center;
+            text-decoration: none;
+            display: inline-block;
+            font-size: 20px;
+            margin: 10px;
+            cursor: pointer;
+            border-radius: 10px;
+            flex: 1;
+            max-width: 200px;
+            transition: background-color 0.3s;
+        }
+
+        .button:hover {
+            background-color: rgba(0, 0, 0, 0.7);
+        }
+    </style>
+</head>
+<body>
+    <header>
+        <h1>Blockchain Eğitim Yönetim Sistemi</h1>
+    </header>
+    <nav>
+        <a href="diplomaIslemleri.html">Diploma İşlemleri</a>
+        <a href="sertifikaIslemleri.html">Sertifika İşlemleri</a>
+        <a href="#" id="profileLink">Profil</a>
+    </nav>
+    <main>
+        <button class="button" id="ekleButton" onclick="location.href='sertifikaEkle.html'">Sertifika Ekle</button>
+        <button class="button" id="sorgulaButton" onclick="location.href='sertifikaSorgula.html'">Sertifika Sorgula</button>
+        <button class="button" id="onaylaButton" onclick="location.href='sertifikaOnayla.html'">Sertifika Onayla</button>
+    </main>
+
+    <!-- Profil Modal -->
+    <div id="profileModal" class="modal">
+        <div class="modal-content">
+            <span class="close">&times;</span>
+            <h2>Profil Bilgileri</h2>
+            <p id="profileInfo"></p>
+        </div>
+    </div>
+
+    <script>
+        document.addEventListener('DOMContentLoaded', function () {
+            const profileLink = document.getElementById('profileLink');
+            const profileModal = document.getElementById('profileModal');
+            const span = document.getElementsByClassName('close')[0];
+            const profileInfo = document.getElementById('profileInfo');
+
+            profileLink.onclick = function() {
+                fetchProfileInfo();
+                profileModal.style.display = 'block';
+            }
+
+            span.onclick = function() {
+                profileModal.style.display = 'none';
+            }
+
+            window.onclick = function(event) {
+                if (event.target == profileModal) {
+                    profileModal.style.display = 'none';
+                }
+            }
+
+            async function fetchProfileInfo() {
+                const token = localStorage.getItem('token');
+                if (!token) {
+                    profileInfo.innerText = 'Giriş yapmadınız.';
+                    return;
+                }
+
+                try {
+                    const response = await fetch('http://192.168.1.105:4151/profil', {
+                        method: 'GET',
+                        headers: { 
+                            'Content-Type': 'application/json',
+                            'Authorization': 'Bearer ' + token
+                        }
+                    });
+
+                    const data = await response.json();
+                    if (data.success) {
+                        const user = data.data;
+                        profileInfo.innerHTML = `
+                            <strong>Kurum Adı:</strong> ${user.kurumadi}<br>
+                            <strong>Telefon:</strong> ${user.telefon}<br>
+                            <strong>Adres:</strong> ${user.adres}<br>
+                            <strong>Sektör:</strong> ${user.sektor}<br>
+                            <strong>Kurum ID:</strong> ${user.id}
+                        `;
+                    } else {
+                        profileInfo.innerText = 'Profil bilgileri alınırken bir hata oluştu: ' + data.message;
+                    }
+                } catch (error) {
+                    console.error('Error:', error);
+                    profileInfo.innerText = 'Profil bilgileri alınırken bir hata oluştu: ' + error.message;
+                }
+            }
+        });
+    </script>
+</body>
+</html>
