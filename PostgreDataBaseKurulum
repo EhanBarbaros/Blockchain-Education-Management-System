@@ -112,3 +112,28 @@ sudo systemctl restart postgresql@12-main
 en son olarak
 sudo -u postgres psql
 kodunu çalıştıralım ve postgres kullanıcısına geçelim.
+
+CREATE DATABASE kullanicilar;
+
+\c kullanicilar
+
+-- institutions tablosu
+CREATE TABLE IF NOT EXISTS institutions (
+    id SERIAL PRIMARY KEY,
+    kurumAdi VARCHAR(255) NOT NULL,
+    telefon VARCHAR(255) NOT NULL,
+    adres VARCHAR(255) NOT NULL,
+    sektor VARCHAR(255) NOT NULL,
+    sifre VARCHAR(255) NOT NULL
+);
+
+-- users tablosu
+CREATE TABLE IF NOT EXISTS users (
+    id SERIAL PRIMARY KEY,
+    username VARCHAR(255) NOT NULL,
+    password VARCHAR(255) NOT NULL,
+    kurumId INTEGER NOT NULL,
+    FOREIGN KEY (kurumId) REFERENCES institutions(id)
+);
+SELECT * FROM institutions;
+SELECT * FROM users;
