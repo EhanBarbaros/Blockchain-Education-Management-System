@@ -259,7 +259,7 @@ app.post('/sertifikaGuncelle', authenticateToken, async (req, res) => {
     try {
         const defaultAccount = await web3.eth.getAccounts().then(accounts => accounts[0]);
         const sertifika = await contract.methods.SertifikaSorgula(tcNo).call();
-        if (sertifika[3] !== req.user.id.toString()) {
+        if (sertifika[4] !== req.user.id.toString()) {
             return res.status(403).json({ success: false, message: 'Sadece ilgili kurum sertifikayı güncelleyebilir.' });
         }
         const options = { from: defaultAccount };
