@@ -1,0 +1,69 @@
+<!DOCTYPE html>
+<html lang="tr">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Sertifika Ekle</title>
+    <link rel="stylesheet" href="css/styles.css">
+</head>
+<body>
+    <video autoplay muted loop>
+        <source src="Background/Header Video 4k background footage ideal for Blockchain Websit.mp4" type="video/mp4">
+        Tarayıcınız video etiketini desteklemiyor.
+    </video>
+    <div class="form-container">
+        <h2>Sertifika Ekle</h2>
+        <form id="sertifikaEkleForm">
+            <input type="text" id="tcNo" placeholder="TC No" required>
+            <input type="text" id="ad" placeholder="Ad" required>
+            <input type="text" id="soyad" placeholder="Soyad" required>
+            <input type="text" id="kurumId" placeholder="Kurum ID" required>
+            <input type="date" id="verilmeTarihi" required>
+            <input type="text" id="sertifikaAdi" placeholder="Sertifika Adı" required>
+            <button type="submit">Sertifika Ekle</button>
+        </form>
+        <div class="message" id="message"></div>
+    </div>
+
+    <script>
+        document.getElementById('sertifikaEkleForm').addEventListener('submit', async function (event) {
+            event.preventDefault();
+            const tcNo = document.getElementById('tcNo').value;
+            const ad = document.getElementById('ad').value;
+            const soyad = document.getElementById('soyad').value;
+            const kurumId = document.getElementById('kurumId').value;
+            const verilmeTarihi = document.getElementById('verilmeTarihi').value;
+            const sertifikaAdi = document.getElementById('sertifikaAdi').value;
+
+            try {
+                const token = localStorage.getItem('token');
+                const response = await fetch('http://192.168.1.105:4151/sertifikaEkle', {
+                    method: 'POST',
+                    headers: { 
+                        'Content-Type': 'application/json',
+                        'Authorization': 'Bearer ' + token
+                    },
+                    body: JSON.stringify({ tcNo, ad, soyad, kurumId, verilmeTarihi, sertifikaAdi })
+                });
+                const data = await response.json();
+                const messageElement = document.getElementById('message');
+                if (data.success) {
+                    messageElement.innerText = 'Sertifika başarıyla eklendi!';
+                    messageElement.style.color = 'green';
+                    setTimeout(() => {
+                        window.location.href = 'AnaSayfa.html';
+                    }, 2000);
+                } else {
+                    messageElement.innerText = 'Sertifika eklenirken bir hata oluştu: ' + data.message;
+                    messageElement.style.color = 'red';
+                }
+            } catch (error) {
+                console.error('Error:', error);
+                const messageElement = document.getElementById('message');
+                messageElement.innerText = 'Sertifika eklenirken bir hata oluştu: ' + error.message;
+                messageElement.style.color = 'red';
+            }
+        });
+    </script>
+</body>
+</html>

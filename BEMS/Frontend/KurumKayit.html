@@ -1,0 +1,65 @@
+<!DOCTYPE html>
+<html lang="tr">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Kurum Kayıt Formu</title>
+    <link rel="stylesheet" href="css/styles.css">
+</head>
+
+<body>
+    <video autoplay muted loop>
+        <source src="Background/Header Video 4k background footage ideal for Blockchain Websit.mp4" type="video/mp4">
+        Tarayıcınız video etiketini desteklemiyor.
+    </video>
+    <div class="form-container">
+        <h2>Kurum Kayıt Formu</h2>
+        <form id="kurumKayitForm">
+            <input type="text" id="kurumAdi" placeholder="Kurum Adı" required>
+            <input type="text" id="telefon" placeholder="Telefon" required>
+            <input type="text" id="adres" placeholder="Adres" required>
+            <input type="text" id="sektor" placeholder="Sektör" required>
+            <input type="password" id="sifre" placeholder="Şifre" required>
+            <button type="submit">Kayıt Ol</button>
+        </form>
+        <div class="message" id="message"></div>
+    </div>
+    <script>
+        document.getElementById('kurumKayitForm').addEventListener('submit', async function (event) {
+            event.preventDefault();
+            const kurumAdi = document.getElementById('kurumAdi').value;
+            const telefon = document.getElementById('telefon').value;
+            const adres = document.getElementById('adres').value;
+            const sektor = document.getElementById('sektor').value;
+            const sifre = document.getElementById('sifre').value;
+
+            try {
+                const response = await fetch('http://192.168.1.105:4151/registerInstitution', {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify({ kurumAdi, telefon, adres, sektor, sifre })
+                });
+                const data = await response.json();
+                const messageElement = document.getElementById('message');
+                if (data.success) {
+                    messageElement.innerText = 'Kayıt başarılı!';
+                    messageElement.style.color = 'green';
+                    setTimeout(() => {
+                        window.location.href = 'KurumLogin.html'; // Giriş sayfasına yönlendir
+                    }, 2000);
+                } else {
+                    messageElement.innerText = 'Kayıt başarısız: ' + data.message;
+                    messageElement.style.color = 'red';
+                }
+            } catch (error) {
+                console.error('Error:', error);
+                const messageElement = document.getElementById('message');
+                messageElement.innerText = 'Kayıt sırasında bir hata oluştu: ' + error.message;
+                messageElement.style.color = 'red';
+            }
+        });
+    </script>
+</body>
+
+</html>

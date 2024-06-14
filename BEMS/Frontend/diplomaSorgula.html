@@ -1,0 +1,75 @@
+<!DOCTYPE html>
+<html lang="tr">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Diploma Sorgula</title>
+    <link rel="stylesheet" href="css/styles.css">
+</head>
+<body>
+    <video autoplay muted loop>
+        <source src="Background/Header Video 4k background footage ideal for Blockchain Websit.mp4" type="video/mp4">
+        Tarayıcınız video etiketini desteklemiyor.
+    </video>
+    <main>
+        <div class="form-container">
+            <h2>Diploma Sorgula</h2>
+            <form id="diplomaSorgulaForm">
+                <input type="text" id="tcNo" placeholder="TC No" required>
+                <button type="submit">Sorgula</button>
+            </form>
+            <div class="result" id="result"></div>
+            <button class="back-button" onclick="location.href='diplomaIslemleri.html'">Geri Dön</button>
+        </div>
+    </main>
+
+    <!-- Profil Modal -->
+    <div id="profileModal" class="modal">
+        <div class="modal-content">
+            <div class="modal-header">
+                <span class="close">&times;</span>
+                <h2>Profil Bilgileri</h2>
+            </div>
+            <div class="modal-body">
+                <p id="profileInfo" class="profile-info"></p>
+            </div>
+        </div>
+    </div>
+
+    <script>
+    
+        document.getElementById('diplomaSorgulaForm').addEventListener('submit', async function (event) {
+            event.preventDefault();
+            const tcNo = document.getElementById('tcNo').value;
+
+            try {
+                const response = await fetch('http://192.168.1.105:4151/diplomaSorgula', {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json',
+                        'Authorization': 'Bearer ' + localStorage.getItem('token')
+                    },
+                    body: JSON.stringify({ tcNo: tcNo })
+                });
+                const data = await response.json();
+                const resultElement = document.getElementById('result');
+                if (data.success) {
+                    resultElement.innerHTML = `
+                        <strong>Ad:</strong> ${data.Ad}<br>
+                        <strong>Soyad:</strong> ${data.Soyad}<br>
+                        <strong>Kurum ID:</strong> ${data.KurumId}<br>
+                        <strong>Durum:</strong> ${data.isState === 'Onaylandi' ? 'Aktif' : 'Pasif'}<br>
+                        <strong>Mezuniyet Tarihi:</strong> ${data.MezuniyetTarihi}
+                    `;
+                } else {
+                    resultElement.innerText = 'Diploma sorgulanırken bir hata oluştu: ' + data.message;
+                }
+            } catch (error) {
+                console.error('Error:', error);
+                const resultElement = document.getElementById('result');
+                resultElement.innerText = 'Diploma sorgulanırken bir hata oluştu: ' + error.message;
+            }
+        });
+    </script>
+</body>
+</html>

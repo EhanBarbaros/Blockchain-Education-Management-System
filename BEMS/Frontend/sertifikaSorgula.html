@@ -1,0 +1,137 @@
+<!DOCTYPE html>
+<html lang="tr">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Sertifika Sorgula</title>
+    <link rel="stylesheet" href="css/styles.css">
+</head>
+<body>
+    <video autoplay muted loop>
+        <source src="Background/Header Video 4k background footage ideal for Blockchain Websit.mp4" type="video/mp4">
+        Tarayıcınız video etiketini desteklemiyor.
+    </video>
+    <main>
+        <div class="form-container">
+            <h2>Sertifika Sorgula</h2>
+            <form id="sertifikaSorgulaForm">
+                <input type="text" id="tcNo" placeholder="TC No" required>
+                <button type="submit">Sorgula</button>
+            </form>
+            <div class="result" id="result"></div>
+            <button class="back-button" onclick="location.href='sertifikaIslemleri.html'">Geri Dön</button>
+        </div>
+    </main>
+
+    <!-- Profil Modal -->
+    <div id="profileModal" class="modal">
+        <div class="modal-content">
+            <div class="modal-header">
+                <span class="close">&times;</span>
+                <h2>Profil Bilgileri</h2>
+            </div>
+            <div class="modal-body">
+                <p id="profileInfo" class="profile-info"></p>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        document.addEventListener('DOMContentLoaded', function () {
+            const profileLink = document.getElementById('profileLink');
+            const profileModal = document.getElementById('profileModal');
+            const span = document.getElementsByClassName('close')[0];
+            const profileInfo = document.getElementById('profileInfo');
+
+            profileLink.onclick = function() {
+                fetchProfileInfo();
+                profileModal.style.display = 'block';
+            }
+
+            span.onclick = function() {
+                profileModal.style.display = 'none';
+            }
+
+            window.onclick = function(event) {
+                if (event.target == profileModal) {
+                    profileModal.style.display = 'none';
+                }
+            }
+
+            async function fetchProfileInfo() {
+                const token = localStorage.getItem('token');
+                if (!token) {
+                    profileInfo.innerText = 'Giriş yapmadınız.';
+                    return;
+                }
+
+                try {
+                    const response = await fetch('http://192.168.1.105:4151/profil', {
+                        method: 'GET',
+                        headers: { 
+                            'Content-Type': 'application/json',
+                            'Authorization': 'Bearer ' + token
+                        }
+                    });
+
+                    const data = await response.json();
+                    if (data.success) {
+                        const user = data.data;
+                        profileInfo.innerHTML = `
+                            <strong>Kurum Adı:</strong> ${user.kurumadi}<br>
+                            <strong>Telefon:</strong> ${user.telefon}<br>
+                            <strong>Adres:</strong> ${user.adres}<br>
+                            <strong>Sektör:</strong> ${user.sektor}<br>
+                            <strong>Kurum ID:</strong> ${user.id}
+                        `;
+                    } else {
+                        profileInfo.innerText = 'Profil bilgileri alınırken bir hata oluştu: ' + data.message;
+                    }
+                } catch (error) {
+                    console.error('Error:', error);
+                    profileInfo.innerText = 'Profil bilgileri alınırken bir hata oluştu: ' + error.message;
+                }
+            }
+        });
+
+        document.getElementById('sertifikaSorgulaForm').addEventListener('submit', async function (event) {
+            event.preventDefault();
+            const tcNo = document.getElementById('tcNo').value;
+
+            try {
+                const token = localStorage.getItem('token');
+                const response = await fetch('http://192.168.1.105:4151/sertifikaSorgula', {
+                    method: 'POST',
+                    headers: { 
+                        'Content-Type': 'application/json',
+                        'Authorization': 'Bearer ' + token
+                    },
+                    body: JSON.stringify({ tcNo })
+                });
+                const data = await response.json();
+                const resultElement = document.getElementById('result');
+                if (data.success) {
+                    resultElement.innerHTML = `
+                        <strong>TC No:</strong> ${data.TcNo}<br>
+                        <strong>Ad:</strong> ${data.Ad}<br>
+                        <strong>Soyad:</strong> ${data.Soyad}<br>
+                        <strong>Kurum ID:</strong> ${data.KurumId}<br>
+                        <strong>Durum:</strong> ${data.isState}<br>
+                        <strong>Verilme Tarihi:</strong> ${data.VerilmeTarihi}<br>
+                        <strong>Sertifika Adı:</strong> ${data.SertifikaAdi}<br>
+                    `;
+                    resultElement.style.color = 'green';
+                } else {
+                    resultElement.innerText = 'Sertifika sorgulanırken bir hata oluştu: ' + data.message;
+                    resultElement.style.color = 'red';
+                }
+            } catch (error) {
+                console.error('Error:', error);
+                const resultElement = document.getElementById('result');
+                resultElement.innerText = 'Sertifika sorgulanırken bir hata oluştu: ' + error.message;
+                resultElement.style.color = 'red';
+            }
+        });
+    </script>
+</body>
+</html>

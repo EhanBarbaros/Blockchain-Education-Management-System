@@ -1,0 +1,132 @@
+<!DOCTYPE html>
+<html lang="tr">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Ana Sayfa</title>
+    <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/css/bootstrap.min.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.3/css/all.min.css">
+    <link rel="stylesheet" href="css/styles.css">
+</head>
+<body>
+    <video autoplay muted loop>
+        <source src="Background/Header Video 4k background footage ideal for Blockchain Websit.mp4" type="video/mp4">
+        Tarayıcınız video etiketini desteklemiyor.
+    </video>
+    <header>
+        <h1>Blockchain Eğitim Yönetim Sistemi</h1>
+    </header>
+    <nav>
+        <a href="AnaSayfa.html">Ana Sayfa</a>
+        <a href="diplomaIslemleri.html">Diploma İşlemleri</a>
+        <a href="sertifikaIslemleri.html">Sertifika İşlemleri</a>
+        <a id="profileLink" href="#">Profil</a>
+    </nav>
+    <main>
+        <div class="info-section">
+            <h2>Sistem Özellikleri</h2>
+            <div class="features">
+                <div class="feature">
+                    <i class="fas fa-graduation-cap"></i>
+                    <h3>Diploma İşlemleri</h3>
+                    <p>Diploma ekleme, sorgulama, onaylama ve güncelleme işlemlerini gerçekleştirebilirsiniz.</p>
+                </div>
+                <div class="feature">
+                    <i class="fas fa-certificate"></i>
+                    <h3>Sertifika İşlemleri</h3>
+                    <p>Sertifika ekleme, sorgulama, onaylama ve güncelleme işlemlerini yapabilirsiniz.</p>
+                </div>
+                <div class="feature">
+                    <i class="fas fa-lock"></i>
+                    <h3>Güvenli Erişim</h3>
+                    <p>Blockchain tabanlı güvenli erişim ve doğrulama işlemleri.</p>
+                </div>
+            </div>
+        </div>
+
+        <div class="updates-section">
+            <h2>Önemli Duyurular</h2>
+            <div class="update">
+                <h3>Duyuru 1</h3>
+                <p>Sistem bakımı nedeniyle 15 Haziran tarihinde kısa süreli erişim kesintisi yaşanacaktır.</p>
+            </div>
+            <div class="update">
+                <h3>Duyuru 2</h3>
+                <p>Yeni özellikler eklenmiştir. Detaylar için lütfen ilgili menüleri ziyaret ediniz.</p>
+            </div>
+        </div>
+    </main>
+
+    <!-- Profil Modal -->
+    <div id="profileModal" class="modal">
+        <div class="modal-content">
+            <div class="modal-header">
+                <span class="close">&times;</span>
+                <h2>Profil Bilgileri</h2>
+            </div>
+            <div class="modal-body">
+                <p id="profileInfo" class="profile-info"></p>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        document.addEventListener('DOMContentLoaded', function () {
+            const profileLink = document.getElementById('profileLink');
+            const profileModal = document.getElementById('profileModal');
+            const span = document.getElementsByClassName('close')[0];
+            const profileInfo = document.getElementById('profileInfo');
+
+            profileLink.onclick = function() {
+                fetchProfileInfo();
+                profileModal.style.display = 'block';
+            }
+
+            span.onclick = function() {
+                profileModal.style.display = 'none';
+            }
+
+            window.onclick = function(event) {
+                if (event.target == profileModal) {
+                    profileModal.style.display = 'none';
+                }
+            }
+
+            async function fetchProfileInfo() {
+                const token = localStorage.getItem('token');
+                if (!token) {
+                    profileInfo.innerText = 'Giriş yapmadınız.';
+                    return;
+                }
+
+                try {
+                    const response = await fetch('http://192.168.1.105:4151/profil', {
+                        method: 'GET',
+                        headers: { 
+                            'Content-Type': 'application/json',
+                            'Authorization': 'Bearer ' + token
+                        }
+                    });
+
+                    const data = await response.json();
+                    if (data.success) {
+                        const user = data.data;
+                        profileInfo.innerHTML = `
+                            <strong>Kurum Adı:</strong> ${user.kurumadi}<br>
+                            <strong>Telefon:</strong> ${user.telefon}<br>
+                            <strong>Adres:</strong> ${user.adres}<br>
+                            <strong>Sektör:</strong> ${user.sektor}<br>
+                            <strong>Kurum ID:</strong> ${user.id}
+                        `;
+                    } else {
+                        profileInfo.innerText = 'Profil bilgileri alınırken bir hata oluştu: ' + data.message;
+                    }
+                } catch (error) {
+                    console.error('Error:', error);
+                    profileInfo.innerText = 'Profil bilgileri alınırken bir hata oluştu: ' + error.message;
+                }
+            }
+        });
+    </script>
+</body>
+</html>

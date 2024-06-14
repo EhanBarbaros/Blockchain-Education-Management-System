@@ -1,0 +1,56 @@
+<!DOCTYPE html>
+<html lang="tr">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Kurum Giriş Formu</title>
+    <link rel="stylesheet" href="css/styles.css">
+</head>
+<body>
+    <video autoplay muted loop>
+        <source src="Background/Header Video 4k background footage ideal for Blockchain Websit.mp4" type="video/mp4">
+        Tarayıcınız video etiketini desteklemiyor.
+    </video>
+    <div class="form-container">
+        <h2>Kurum Giriş Formu</h2>
+        <form id="kurumLoginForm">
+            <input type="text" id="kurumAdi" placeholder="Kurum Adı" required>
+            <input type="password" id="sifre" placeholder="Şifre" required>
+            <button type="submit">Giriş Yap</button>
+        </form>
+        <div class="message" id="message"></div>
+    </div>
+
+    <script>
+        document.getElementById('kurumLoginForm').addEventListener('submit', async function (event) {
+            event.preventDefault();
+            const kurumAdi = document.getElementById('kurumAdi').value;
+            const sifre = document.getElementById('sifre').value;
+
+            try {
+                const response = await fetch('http://192.168.1.105:4151/loginInstitution', {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify({ kurumAdi, sifre })
+                });
+                const data = await response.json();
+                const messageElement = document.getElementById('message');
+                if (data.success) {
+                    messageElement.innerText = 'Başarıyla giriş yapıldı!';
+                    messageElement.style.color = 'green';
+                    localStorage.setItem('token', data.token); // JWT token'ı kaydet
+                    window.location.href = 'anasayfa.html'; // Ana sayfaya yönlendir
+                } else {
+                    messageElement.innerText = 'Giriş başarısız: ' + data.message;
+                    messageElement.style.color = 'red';
+                }
+            } catch (error) {
+                console.error('Error:', error);
+                const messageElement = document.getElementById('message');
+                messageElement.innerText = 'Giriş sırasında bir hata oluştu: ' + error.message;
+                messageElement.style.color = 'red';
+            }
+        });
+    </script>
+</body>
+</html>
